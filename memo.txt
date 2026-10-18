@@ -1,0 +1,32 @@
+# DESIGN MEMO
+#
+# 1. How did recursive insertion work?
+# The insert() method starts at the root and checks whether the current
+# node matches the manager name I'm looking for. If it does, and the
+# requested side is open, it creates a new EmployeeNode there. If it
+# doesn't match, the method searches the left and right subtrees to see
+# which one actually contains the manager, then recursively calls
+# insert() on that branch. Each recursive call narrows the search down
+# one level, the same way you'd walk down an org chart branch by branch
+# instead of scanning every employee in a flat list.
+#
+# 2. What challenges did you face when finding the right spot for a new
+# employee?
+# The main challenge was avoiding duplicate or misleading error messages.
+# Since a tree branches two ways, recursing into both the left and right
+# subtree without checking first meant a "manager not found" message
+# could print from a branch that was never going to contain that manager
+# anyway. I solved this with a helper method that checks whether a
+# subtree actually contains the manager's name before recursing into it,
+# so the "not found" message only prints once, after the whole tree has
+# genuinely been searched.
+#
+# 3. When might trees be preferable to other data structures in
+# real-world systems?
+# Trees are useful whenever data has a natural hierarchy, like a
+# reporting structure, a file system, or a webpage's DOM. Unlike a flat
+# list or dictionary, a tree's shape directly models the relationships
+# between items, so searching only has to follow relevant branches
+# instead of scanning every entry. That makes operations like lookup,
+# insertion, and traversal faster and more intuitive for hierarchical
+# data than trying to simulate hierarchy with flat structures.

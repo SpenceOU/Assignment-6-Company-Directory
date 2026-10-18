@@ -7,8 +7,10 @@ class EmployeeNode:
         right (EmployeeNode): The right child node, representing the right subordinate.
     '''
 
-    # Delete this line and implement the class below
-    pass
+    def __init__(self, name):
+        self.name = name
+        self.left = None
+        self.right = None
 
 class TeamTree:
     '''
@@ -20,18 +22,74 @@ class TeamTree:
         print_tree(node=None, level=0): Prints the tree structure starting from the given node.
 
     '''
-    
-    # Delete this line and implement the class below
-    pass
+
+    def __init__(self):
+        self.root = None
+
+    def insert(self, manager_name, employee_name, side, current_node=None):
+        if current_node is None:
+            current_node = self.root
+
+        if current_node is None:
+            print(f"❌ No team lead exists yet. Add a team lead first.")
+            return
+
+        if current_node.name == manager_name:
+            if side == "left":
+                if current_node.left is None:
+                    current_node.left = EmployeeNode(employee_name)
+                    print(f"✅ {employee_name} added to the LEFT of {manager_name}")
+                else:
+                    print(f"❌ {manager_name} already has someone on the LEFT.")
+            elif side == "right":
+                if current_node.right is None:
+                    current_node.right = EmployeeNode(employee_name)
+                    print(f"✅ {employee_name} added to the RIGHT of {manager_name}")
+                else:
+                    print(f"❌ {manager_name} already has someone on the RIGHT.")
+            else:
+                print(f"❌ '{side}' is not a valid side. Choose LEFT or RIGHT.")
+            return
+
+        found = False
+        if current_node.left is not None:
+            if self._contains(current_node.left, manager_name):
+                self.insert(manager_name, employee_name, side, current_node.left)
+                found = True
+        if not found and current_node.right is not None:
+            if self._contains(current_node.right, manager_name):
+                self.insert(manager_name, employee_name, side, current_node.right)
+                found = True
+
+        if not found and current_node is self.root:
+            print(f"❌ Manager '{manager_name}' not found in the team structure.")
+
+    def _contains(self, node, name):
+        if node is None:
+            return False
+        if node.name == name:
+            return True
+        return self._contains(node.left, name) or self._contains(node.right, name)
+
+    def print_tree(self, node=None, level=0):
+        if node is None and level == 0:
+            node = self.root
+        if node is None:
+            return
+
+        print("  " * level + f"- {node.name}")
+        self.print_tree(node.left, level + 1)
+        self.print_tree(node.right, level + 1)
+
 
 # Test your code here
-
-
-
-
-
-
-
+company_directory_test = TeamTree()
+company_directory_test.root = EmployeeNode("Jordan")
+company_directory_test.insert("Jordan", "Taylor", "right")
+company_directory_test.insert("Jordan", "Riley", "left")
+company_directory_test.insert("Riley", "Dana", "right")
+company_directory_test.insert("Riley", "Morgan", "left")
+company_directory_test.print_tree()
 
 
 # CLI functionality
@@ -70,3 +128,6 @@ def company_directory():
             break
         else:
             print("❌ Invalid option. Try again.")
+
+if __name__ == "__main__":
+    company_directory()
